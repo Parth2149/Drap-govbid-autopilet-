@@ -6,7 +6,6 @@ import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import { Brain, Copy, Download, FileText, Loader2 } from "lucide-react";
 import type { WorkspaceState } from "@/lib/proposal-types";
-import { exportProposalPdf } from "@/lib/export-proposal-pdf";
 
 const tracePlaceholder = "> Run a generation to view the reasoning trace.";
 const traceLoading = "> Awaiting reasoning trace from Dual-RAG pipeline...";
@@ -87,13 +86,25 @@ export function ProposalPanels({ ws }: { ws: WorkspaceState }) {
   const [pdfError, setPdfError] = useState<string | null>(null);
 
   async function handleDownloadPdf() {
-    if (!proposalRef.current || !ws.proposal) return;
+    const element =
+      document.getElementById("pdf-export-container") ?? proposalRef.current;
+    if (!element || !ws.proposal) return;
     setPdfLoading(true);
     setPdfError(null);
     try {
-      const renderedText =
-        proposalRef.current.innerText?.trim() || ws.proposal.trim();
-      await exportProposalPdf(renderedText);
+      const html2pdf = (await import("html2pdf.js")).default;
+      const opt = {
+        margin: 0.5,
+        filename: "GovBid_Proposal.pdf",
+        image: { type: "jpeg" as const, quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false },
+        jsPDF: {
+          unit: "in",
+          format: "letter",
+          orientation: "portrait" as const,
+        },
+      };
+      await html2pdf().set(opt).from(element).save();
     } catch (err) {
       console.error("PDF export error:", err);
       setPdfError("PDF export failed. Try again or use Copy.");
@@ -165,15 +176,20 @@ export function ProposalPanels({ ws }: { ws: WorkspaceState }) {
           {ws.loading && !ws.proposal ? (
             <p className="text-stone-500">Composing markdown draft...</p>
           ) : ws.proposal ? (
-            <div className="prose prose-invert prose-th:text-emerald-400 prose-td:border-slate-700">
-              <ReactMarkdown
-                // @ts-expect-error react-markdown v10 types omit className prop
-                className="prose prose-invert prose-th:text-emerald-400 prose-td:border-slate-700"
-                rehypePlugins={[rehypeRaw]}
-                remarkPlugins={[remarkGfm]}
-              >
-                {ws.proposal}
-              </ReactMarkdown>
+            <div
+              id="pdf-export-container"
+              className="[&_table]:w-full [&_table]:border-collapse [&_th]:border [&_th]:border-pink-500/30 [&_td]:border [&_td]:border-pink-500/30 [&_th]:p-3 [&_td]:p-3 [&_th]:text-left [&_table]:mb-4"
+            >
+              <div className="prose prose-invert prose-th:text-emerald-400 prose-td:border-slate-700">
+                <ReactMarkdown
+                  // @ts-expect-error react-markdown v10 types omit className prop
+                  className="prose prose-invert prose-th:text-emerald-400 prose-td:border-slate-700"
+                  rehypePlugins={[rehypeRaw]}
+                  remarkPlugins={[remarkGfm]}
+                >
+                  {ws.proposal}
+                </ReactMarkdown>
+              </div>
             </div>
           ) : (
             <p className="text-stone-500">{proposalEmpty}</p>
