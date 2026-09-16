@@ -131,3 +131,28 @@ body {
   padding: 0.15em 0.4em;
   border-radius: 0.375rem;
 }
+
+.markdown-output table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.markdown-output th,
+.markdown-output td {
+  border: 1px solid #e7e5e4;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+
+.markdown-output th {
+  background-color: #fdf2f8;
+  color: #9d174d;
+  font-weight: 600;
+}
+
+.markdown-output tr:nth-child(even) {
+  background-color: #fafaf9;
+}
+
