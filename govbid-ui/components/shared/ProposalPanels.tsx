@@ -2,6 +2,8 @@
 
 import { useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
 import { Brain, Copy, Download, FileText, Loader2 } from "lucide-react";
 import type { WorkspaceState } from "@/lib/proposal-types";
 import { exportProposalPdf } from "@/lib/export-proposal-pdf";
@@ -163,7 +165,16 @@ export function ProposalPanels({ ws }: { ws: WorkspaceState }) {
           {ws.loading && !ws.proposal ? (
             <p className="text-stone-500">Composing markdown draft...</p>
           ) : ws.proposal ? (
-            <ReactMarkdown>{ws.proposal}</ReactMarkdown>
+            <div className="prose prose-invert prose-th:text-emerald-400 prose-td:border-slate-700">
+              <ReactMarkdown
+                // @ts-expect-error react-markdown v10 types omit className prop
+                className="prose prose-invert prose-th:text-emerald-400 prose-td:border-slate-700"
+                rehypePlugins={[rehypeRaw]}
+                remarkPlugins={[remarkGfm]}
+              >
+                {ws.proposal}
+              </ReactMarkdown>
+            </div>
           ) : (
             <p className="text-stone-500">{proposalEmpty}</p>
           )}
