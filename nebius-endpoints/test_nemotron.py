@@ -3,7 +3,7 @@ from openai import OpenAI
 
 client = OpenAI(
     base_url="https://api.tokenfactory.nebius.com/v1/",
-    api_key="v1.CmMKHHN0YXRpY2tleS1lMDBxbWZweWY4ZnhqN3I0N3ESIXNlcnZpY2VhY2NvdW50LWUwMGdnODJwbnJzcDd4YWsxbjILCPu1pNUGEJSE7TI6DAj6uLygBxDAxfjtAUACWgNlMDA.AAAAAAAAAAGPXDv5_IhCjp4s7-jgXYH59JmVnynCHOzuGtFDx9oS93e1qqvAh91MW3H8WW8mn1J4z1tLOk_RHu6Eh8TGdzEH"  # <-- Make sure your key is here
+    api_key=os.environ.get("NEBIUS_API_KEY", "your-nebius-api-key-here")  # Set NEBIUS_API_KEY env var
 )
 
 def test_nemotron_reasoning():
