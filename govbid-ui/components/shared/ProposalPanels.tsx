@@ -92,6 +92,11 @@ export function ProposalPanels({ ws }: { ws: WorkspaceState }) {
     setPdfLoading(true);
     setPdfError(null);
     try {
+      if (typeof window !== "undefined") {
+        const html2canvasPro = (await import("html2canvas-pro")).default;
+        (window as unknown as { html2canvas: typeof html2canvasPro }).html2canvas =
+          html2canvasPro;
+      }
       const html2pdf = (await import("html2pdf.js")).default;
       const opt = {
         margin: 0.5,
