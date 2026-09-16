@@ -1,0 +1,198 @@
+{
+  "name": "RFP_Ingestion_Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "http://localhost:5678/webhook-test/ingest-rfp",
+        "options": {
+          "binaryPropertyName": "data"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -64,
+        -144
+      ],
+      "id": "4977cf4d-cf8d-428d-b68e-157df03d0a33",
+      "name": "Webhook",
+      "webhookId": "16fbc7ce-ab25-44f1-8efa-0e68234f077e"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst fullText = items[0].json.text || \"\";\n\nconst chunkSize = 1200;\nconst overlap = 200;\nconst chunks = [];\n\nlet startIndex = 0;\nlet chunkIndex = 1;\n\nwhile (startIndex < fullText.length) {\n  const endIndex = Math.min(startIndex + chunkSize, fullText.length);\n  const chunkText = fullText.substring(startIndex, endIndex).trim();\n\n  if (chunkText.length > 50) {\n    chunks.push({\n      json: {\n        chunk_number: chunkIndex,\n        requirement_text: chunkText,\n        character_count: chunkText.length\n      }\n    });\n    chunkIndex++;\n  }\n  startIndex += (chunkSize - overlap);\n}\n\nreturn chunks;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        544,
+        -32
+      ],
+      "id": "b7bf003c-929a-4cdb-a99d-37dab4be6090",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.tokenfactory.nebius.com/v1/embeddings",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer v1.CmMKHHN0YXRpY2tleS1lMDBxbWZweWY4ZnhqN3I0N3ESIXNlcnZpY2VhY2NvdW50LWUwMGdnODJwbnJzcDd4YWsxbjILCPu1pNUGEJSE7TI6DAj6uLygBxDAxfjtAUACWgNlMDA.AAAAAAAAAAGPXDv5_IhCjp4s7-jgXYH59JmVnynCHOzuGtFDx9oS93e1qqvAh91MW3H8WW8mn1J4z1tLOk_RHu6Eh8TGdzEH"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{\n  {\n    \"input\": $json.requirement_text,\n    \"model\": \"Qwen/Qwen3-Embedding-8B\",\n    \"encoding_format\": \"float\"\n  }\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        736,
+        -32
+      ],
+      "id": "0879e510-2678-49b6-a742-eae2c05d90e4",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "tableId": "rfp_requirements",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "requirement_text",
+              "fieldValue": "={{ $('Code in JavaScript').item.json.requirement_text }}"
+            },
+            {
+              "fieldId": "section_title",
+              "fieldValue": "={{ 'Section Chunk ' + $('Code in JavaScript').item.json.chunk_number }}"
+            },
+            {
+              "fieldId": "embedding",
+              "fieldValue": "={{ $json.data[0].embedding }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        960,
+        -32
+      ],
+      "id": "bc3d8696-9bab-4d5a-859a-2e7a048228f0",
+      "name": "Create a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "QwRtaUJqONJq6kQ6",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        336,
+        -32
+      ],
+      "id": "dd1fb18a-d5e3-44fa-984b-faacaeb0c539",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "url": "https://files.cleanpoweralliance.org/uploads/2022/09/CPA-RFP-Software-Development-and-IT-Consulting-Services.pdf",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        160,
+        -16
+      ],
+      "id": "9bf12c47-d0f5-43e5-bd11-2658694c357e",
+      "name": "HTTP Request1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        []
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Create a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "168d3a22-e0a8-45e6-b80c-8eba94d1f217",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "fcee27e9f7bb62f98d2c718e70963e59c88030b1df65f3738802c1eaef150554"
+  },
+  "nodeGroups": [],
+  "id": "rGdeOhLN1YW437jP",
+  "tags": []
+}
