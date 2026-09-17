@@ -46,7 +46,11 @@ export function useProposalWorkspace() {
     setLastGenerationSec(null);
 
     try {
-      const res = await fetch("http://localhost:5678/webhook/generate-proposal", {
+      const generateUrl =
+        process.env.NEXT_PUBLIC_N8N_GENERATE_PROPOSAL_URL ||
+        "https://emblaze-stroller-footman.ngrok-free.dev/webhook/generate-proposal";
+
+      const res = await fetch(generateUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: prompt }),
@@ -62,7 +66,7 @@ export function useProposalWorkspace() {
     } catch (err) {
       const message =
         err instanceof TypeError && err.message.includes("fetch")
-          ? "Could not reach the proposal service at localhost:5678. Ensure n8n is running and the webhook is active."
+          ? "Could not reach the proposal service. Ensure your n8n workflow and webhook are active."
           : err instanceof Error
             ? err.message
             : "An unexpected error occurred.";

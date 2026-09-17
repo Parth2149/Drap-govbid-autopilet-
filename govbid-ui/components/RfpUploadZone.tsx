@@ -64,7 +64,11 @@ export function RfpUploadZone({ onIngestSuccess, onLoadDemo }: RfpUploadZoneProp
       const formData = new FormData();
       formData.append("file", rfpFile);
 
-      const res = await fetch("http://localhost:5678/webhook/ingest-rfp", {
+      const ingestUrl =
+        process.env.NEXT_PUBLIC_N8N_INGEST_RFP_URL ||
+        "https://emblaze-stroller-footman.ngrok-free.dev/webhook/ingest-rfp";
+
+      const res = await fetch(ingestUrl, {
         method: "POST",
         body: formData,
       });
@@ -79,7 +83,7 @@ export function RfpUploadZone({ onIngestSuccess, onLoadDemo }: RfpUploadZoneProp
     } catch (err) {
       const message =
         err instanceof TypeError && err.message.includes("fetch")
-          ? "Could not reach ingest service at localhost:5678."
+          ? "Could not reach ingest service. Ensure your n8n workflow and webhook are active."
           : err instanceof Error
             ? err.message
             : "Ingest failed.";
