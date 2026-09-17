@@ -108,6 +108,10 @@ export function ProposalPanels({ ws }: { ws: WorkspaceState }) {
           format: "letter",
           orientation: "portrait" as const,
         },
+        pagebreak: {
+          mode: ["avoid-all", "css", "legacy"],
+          avoid: ["tr", "table", "h1", "h2", "h3", ".avoid-break"],
+        },
       };
       await html2pdf().set(opt).from(element).save();
     } catch (err) {
@@ -183,7 +187,7 @@ export function ProposalPanels({ ws }: { ws: WorkspaceState }) {
           ) : ws.proposal ? (
             <div
               id="pdf-export-container"
-              className="[&_table]:w-full [&_table]:border-collapse [&_th]:border [&_th]:border-pink-500/30 [&_td]:border [&_td]:border-pink-500/30 [&_th]:p-3 [&_td]:p-3 [&_th]:text-left [&_table]:mb-4"
+              className="[&_table]:w-full [&_table]:border-collapse [&_th]:border [&_th]:border-pink-500/30 [&_td]:border [&_td]:border-pink-500/30 [&_th]:p-3 [&_td]:p-3 [&_th]:text-left [&_table]:mb-4 [&_tr]:break-inside-avoid [&_tr]:[page-break-inside:avoid] [&_td]:break-inside-avoid [&_td]:[page-break-inside:avoid] [&_th]:break-inside-avoid [&_th]:[page-break-inside:avoid] [&_thead]:[display:table-header-group]"
             >
               <div className="prose prose-invert prose-th:text-emerald-400 prose-td:border-slate-700">
                 <ReactMarkdown

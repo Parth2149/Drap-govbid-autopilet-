@@ -30,6 +30,10 @@ export async function exportProposalPdf(
     image: { type: "jpeg" as const, quality: 0.98 },
     html2canvas: { scale: 2, useCORS: true, logging: false },
     jsPDF: { unit: "in", format: "letter", orientation: "portrait" as const },
+    pagebreak: {
+      mode: ["avoid-all", "css", "legacy"],
+      avoid: ["tr", "table", "h1", "h2", "h3", ".avoid-break"],
+    },
   };
 
   await html2pdf().set(opt).from(element).save();

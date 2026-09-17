@@ -156,3 +156,41 @@ body {
   background-color: #fafaf9;
 }
 
+/* Page break rules for PDF Export */
+#pdf-export-container table,
+.markdown-output table {
+  page-break-inside: auto;
+  break-inside: auto;
+}
+
+#pdf-export-container thead,
+.markdown-output thead {
+  display: table-header-group;
+}
+
+#pdf-export-container tr,
+.markdown-output tr {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+  break-inside: avoid-page !important;
+}
+
+#pdf-export-container th,
+#pdf-export-container td,
+.markdown-output th,
+.markdown-output td {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+}
+
+#pdf-export-container h1,
+#pdf-export-container h2,
+#pdf-export-container h3,
+.markdown-output h1,
+.markdown-output h2,
+.markdown-output h3 {
+  page-break-after: avoid !important;
+  break-after: avoid !important;
+}
+
+
