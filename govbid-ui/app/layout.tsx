@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GovBid AI",
-  description: "Dual-RAG government proposal synthesis — GovBid.AI",
+  title: "Drapbid AI",
+  description: "Dual-RAG government proposal synthesis — Drapbid.ai",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

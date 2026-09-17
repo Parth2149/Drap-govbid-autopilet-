@@ -26,7 +26,7 @@ export async function exportProposalPdf(
 
   const opt = {
     margin: 0.5,
-    filename: "GovBid_Proposal.pdf",
+    filename: "Drapbid_Proposal.pdf",
     image: { type: "jpeg" as const, quality: 0.98 },
     html2canvas: { scale: 2, useCORS: true, logging: false },
     jsPDF: { unit: "in", format: "letter", orientation: "portrait" as const },

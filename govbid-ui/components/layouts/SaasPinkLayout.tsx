@@ -52,7 +52,7 @@ export function SaasPinkLayout({ ws }: { ws: WorkspaceState }) {
 
       <footer className="relative z-10 border-t border-pink-200/60 bg-white/80 py-4">
         <p className="text-center text-xs text-stone-500">
-          GovBid AI · NVIDIA × Nebius Hackathon · Dual-RAG proposal pipeline
+          Drapbid.ai · NVIDIA × Nebius Hackathon · Dual-RAG proposal pipeline
         </p>
       </footer>
     </div>

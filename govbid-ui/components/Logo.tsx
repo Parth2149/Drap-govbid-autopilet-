@@ -57,9 +57,9 @@ export function Logo({ className = "" }: { className?: string }) {
       </svg>
 
       <span className="text-lg font-semibold tracking-tight text-rose-950">
-        GovBid
+        Drapbid
         <span className="bg-gradient-to-r from-emerald-500 to-sky-500 bg-clip-text text-transparent">
-          .AI
+          .ai
         </span>
       </span>
     </div>

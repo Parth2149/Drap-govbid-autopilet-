@@ -46,7 +46,7 @@ export function ArchitectureView() {
           Dual-RAG pipeline built for auditable gov proposals
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-stone-600 sm:text-base">
-          GovBid AI combines workflow automation, vector search over your knowledge base,
+          Drapbid AI combines workflow automation, vector search over your knowledge base,
           and large-model reasoning to produce compliance-ready drafts with a visible
           trace you can defend in capture reviews.
         </p>

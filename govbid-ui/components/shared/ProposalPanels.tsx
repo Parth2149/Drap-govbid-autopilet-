@@ -100,7 +100,7 @@ export function ProposalPanels({ ws }: { ws: WorkspaceState }) {
       const html2pdf = (await import("html2pdf.js")).default;
       const opt = {
         margin: 0.5,
-        filename: "GovBid_Proposal.pdf",
+        filename: "Drapbid_Proposal.pdf",
         image: { type: "jpeg" as const, quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true, logging: false },
         jsPDF: {

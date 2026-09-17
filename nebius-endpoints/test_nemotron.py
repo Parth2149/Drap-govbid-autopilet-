@@ -15,7 +15,7 @@ def test_nemotron_reasoning():
             messages=[
                 {
                     "role": "system", 
-                    "content": "You are GovBid AI, an expert enterprise procurement specialist. Be concise and authoritative."
+                    "content": "You are Drapbid AI, an expert enterprise procurement specialist. Be concise and authoritative."
                 },
                 {
                     "role": "user", 
